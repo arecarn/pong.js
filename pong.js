@@ -1,19 +1,62 @@
-var WIDTH = 400;
-var HEIGHT = 600;
+// Game Settings
+//////////////////////////////////////////////////////////////////////////////
+var ORIGIN = 0;
+var WIDTH = 200;
+var HEIGHT = 200;
 
+var SPEED = 8;
+
+var PADDLE_HEIGHT = 10;
+var PADDLE_WIDTH = 50;
+
+var BALL_DIAMETER = 5;
+var INITAL_BALL_SPEED = 3;
+
+
+// Canvas
+//////////////////////////////////////////////////////////////////////////////
 var canvas = document.createElement("canvas");
 canvas.width = WIDTH;
 canvas.height = HEIGHT;
 var context = canvas.getContext('2d');
 
+// Colors
+//////////////////////////////////////////////////////////////////////////////
+BG_COLOR = "#FF00FF"
+PADDLE_COLOR = "#0000FF"
+BALL_COLOR = "#000000"
+
+
+// Keys
+//////////////////////////////////////////////////////////////////////////////
+var keysDown = {};
+var KEY_LEFT = 37
+var KEY_RIGHT = 39
+
+// Game Objects
+//////////////////////////////////////////////////////////////////////////////
 var player = new Player();
 var computer = new Computer();
 var ball = new Ball(WIDTH/2, HEIGHT/2);
 
-var keysDown = {};
+
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+function main() {
+    document.body.appendChild(canvas);
+    animate(step);
+}
+
+var animate = window.requestAnimationFrame
+|| window.webkitRequestAnimationFrame
+|| window.mozRequestAnimationFrame
+|| function (callback) {
+        window.setTimeout(callback, 1000 / 60)
+    };
 
 var render = function () {
-    context.fillStyle = "#FF00FF";
+    context.fillStyle = BG_COLOR;
     context.fillRect(0, 0, WIDTH, HEIGHT);
     player.render();
     computer.render();
@@ -42,7 +85,7 @@ function Paddle(x, y, width, height) {
 }
 
 Paddle.prototype.render = function () {
-    context.fillStyle = "#0000FF";
+    context.fillStyle = PADDLE_COLOR
     context.fillRect(this.x, this.y, this.width, this.height);
 };
 
@@ -61,7 +104,11 @@ Paddle.prototype.move = function (x, y) {
 };
 
 function Computer() {
-    this.paddle = new Paddle(175, 10, 50, 10);
+    this.paddle = new Paddle(
+            (WIDTH / 2) - (PADDLE_WIDTH / 2),
+            20,
+            PADDLE_WIDTH,
+            PADDLE_HEIGHT);
 }
 
 Computer.prototype.render = function () {
@@ -71,21 +118,25 @@ Computer.prototype.render = function () {
 Computer.prototype.update = function (ball) {
     var x_pos = ball.x;
     var diff = -((this.paddle.x + (this.paddle.width / 2)) - x_pos);
-    if (diff < 0 && diff < -4) {
-        diff = -5;
-    } else if (diff > 0 && diff > 4) {
-        diff = 5;
+    if (diff < 0 && diff < -(SPEED-1)) {
+        diff = -SPEED;
+    } else if (diff > 0 && diff > SPEED-1) {
+        diff = SPEED;
     }
     this.paddle.move(diff, 0);
     if (this.paddle.x < 0) {
         this.paddle.x = 0;
-    } else if (this.paddle.x + this.paddle.width > 400) {
-        this.paddle.x = 400 - this.paddle.width;
+    } else if (this.paddle.x + this.paddle.width > WIDTH) {
+        this.paddle.x = WIDTH - this.paddle.width;
     }
 };
 
 function Player() {
-    this.paddle = new Paddle(175, 580, 50, 10);
+    this.paddle = new Paddle(
+            (WIDTH / 2) - (PADDLE_WIDTH / 2),
+            HEIGHT - 20,
+            PADDLE_WIDTH,
+            PADDLE_HEIGHT);
 }
 
 Player.prototype.render = function () {
@@ -95,10 +146,10 @@ Player.prototype.render = function () {
 Player.prototype.update = function () {
     for (var key in keysDown) {
         var value = Number(key);
-        if (value == 37) {
-            this.paddle.move(-4, 0);
-        } else if (value == 39) {
-            this.paddle.move(4, 0);
+        if (value == KEY_LEFT) {
+            this.paddle.move(-SPEED, 0);
+        } else if (value == KEY_RIGHT) {
+            this.paddle.move(SPEED, 0);
         } else {
             this.paddle.move(0, 0);
         }
@@ -109,13 +160,13 @@ function Ball(x, y) {
     this.x = x;
     this.y = y;
     this.x_speed = 0;
-    this.y_speed = 3;
+    this.y_speed = INITAL_BALL_SPEED;
 }
 
 Ball.prototype.render = function () {
     context.beginPath();
-    context.arc(this.x, this.y, 5, 2 * Math.PI, false);
-    context.fillStyle = "#000000";
+    context.arc(this.x, this.y, BALL_DIAMETER, 2 * Math.PI, false);
+    context.fillStyle = BALL_COLOR
     context.fill();
 };
 
@@ -130,19 +181,19 @@ Ball.prototype.update = function (paddle1, paddle2) {
     if (this.x - 5 < 0) {
         this.x = 5;
         this.x_speed = -this.x_speed;
-    } else if (this.x + 5 > 400) {
-        this.x = 395;
+    } else if (this.x + 5 > WIDTH) {
+        this.x = WIDTH-5;
         this.x_speed = -this.x_speed;
     }
 
-    if (this.y < 0 || this.y > 600) {
+    if (this.y < 0 || this.y > HEIGHT) {
         this.x_speed = 0;
         this.y_speed = 3;
-        this.x = 200;
-        this.y = 300;
+        this.x = WIDTH/2;
+        this.y = HEIGHT/2;
     }
 
-    if (top_y > 300) {
+    if (top_y > HEIGHT/2) {
         if (top_y < (paddle1.y + paddle1.height)
                 && bottom_y > paddle1.y
                 && top_x < (paddle1.x + paddle1.width)
@@ -170,12 +221,3 @@ window.addEventListener("keydown", function (event) {
 window.addEventListener("keyup", function (event) {
     delete keysDown[event.keyCode];
 });
-
-var animate = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function (callback) {
-        window.setTimeout(callback, 1000 / 60)
-    };
-
-function main() {
-    document.body.appendChild(canvas);
-    animate(step);
-}
