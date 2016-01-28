@@ -44,7 +44,7 @@ var ball = new Ball(WIDTH/2, HEIGHT/2);
 //////////////////////////////////////////////////////////////////////////////
 
 function main() {
-    document.body.appendChild(canvas);
+    document.getElementById("pong").appendChild(canvas);
     animate(step);
 }
 
