@@ -12,26 +12,27 @@ var PADDLE_WIDTH = 50;
 var BALL_DIAMETER = 5;
 var INITAL_BALL_SPEED = 3;
 
-
-// Canvas
+// STYLE
 //////////////////////////////////////////////////////////////////////////////
-var canvas = document.createElement("canvas");
-canvas.width = WIDTH;
-canvas.height = HEIGHT;
-var context = canvas.getContext('2d');
+BG_COLOR = "#FFF"
+PADDLE_COLOR = "#000"
+BALL_COLOR = "#000"
 
-// Colors
-//////////////////////////////////////////////////////////////////////////////
-BG_COLOR = "#FF00FF"
-PADDLE_COLOR = "#0000FF"
-BALL_COLOR = "#000000"
-
+BORDER_STYLE = "thick solid #000"
 
 // Keys
 //////////////////////////////////////////////////////////////////////////////
 var keysDown = {};
 var KEY_LEFT = 37
 var KEY_RIGHT = 39
+
+// Canvas
+//////////////////////////////////////////////////////////////////////////////
+var canvas = document.createElement("canvas");
+canvas.width = WIDTH;
+canvas.height = HEIGHT;
+canvas.style.border = BORDER_STYLE
+var context = canvas.getContext('2d');
 
 // Game Objects
 //////////////////////////////////////////////////////////////////////////////
