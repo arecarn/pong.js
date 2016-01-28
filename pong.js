@@ -2,15 +2,15 @@
 //////////////////////////////////////////////////////////////////////////////
 var ORIGIN = 0;
 var WIDTH = 200;
-var HEIGHT = 200;
+var HEIGHT = 300;
 
-var SPEED = 8;
+var SPEED = 4;
 
 var PADDLE_HEIGHT = 10;
 var PADDLE_WIDTH = 50;
 
 var BALL_DIAMETER = 5;
-var INITAL_BALL_SPEED = 3;
+var INITAL_BALL_SPEED = 2;
 
 // STYLE
 //////////////////////////////////////////////////////////////////////////////
